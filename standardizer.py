@@ -14,6 +14,13 @@ class Standardizer(object):
         self.sound_files = sound_files
         self.feature_statistics = {}
 
+    @staticmethod
+    def join_lists(lists):
+        output = []
+        for lst in lists:
+            output += lst
+        return output
+
     def calculate_feature_statistics(self, series_key='series'):
         for key in self.sound_files[0].analysis[series_key]:
             self.feature_statistics[key] = {
@@ -26,7 +33,10 @@ class Standardizer(object):
         for feature in self.feature_statistics:
             series = []
             for sf in self.sound_files:
-                series += sf.analysis[series_key][feature]
+                if isinstance(sf.analysis[series_key][feature][0], list):
+                    series += Standardizer.join_lists(sf.analysis[series_key][feature])
+                else:
+                    series += sf.analysis[series_key][feature]
 
             if len(series) == 0:
                 continue
@@ -44,12 +54,19 @@ class Standardizer(object):
                 sf.analysis['series_standardized'] = {}
                 for feature in self.feature_statistics:
                     if isinstance(sf.analysis['series'][feature][0], list):
-                        # TODO: implement standardization for features such as melbands, which are arrays within an array
-                        raise Exception('Standardization for lists within a list is not implemented yet')
-                    sf.analysis['series_standardized'][feature] = [
-                        self.get_standardized_value(feature, value)
-                        for value in sf.analysis['series'][feature]
-                        ]
+                        standardized_lists = []
+                        for series in sf.analysis['series'][feature]:
+                            standardized_list = [
+                                self.get_standardized_value(feature, value)
+                                for value in series
+                                ]
+                            standardized_lists.append(standardized_list)
+                        sf.analysis['series_standardized'][feature] = standardized_lists
+                    else:
+                        sf.analysis['series_standardized'][feature] = [
+                            self.get_standardized_value(feature, value)
+                            for value in sf.analysis['series'][feature]
+                            ]
 
     def get_standardized_value(self, feature, value):
         """
