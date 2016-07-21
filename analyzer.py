@@ -8,7 +8,8 @@ from jinja2 import Template
 
 
 class Analyzer(object):
-    def __init__(self):
+    def __init__(self, precision):
+        self.precision = precision
         self.analyzer = essentia_analyzer.EssentiaAnalyzer()
 
     def run(self, settings_filename):
@@ -29,11 +30,12 @@ class Analyzer(object):
                 std.add_standardized_series()
                 snd.analysis['series'] = snd.analysis['series_standardized']
                 del snd.analysis['series_standardized']
+                std.round_to_precision(self.precision)
             sounds.append(snd)
 
         json_data = {snd.filename: snd.analysis['series'] for snd in sounds}
 
-        json_data_serialized = json.dumps(json_data)
+        json_data_serialized = json.dumps(json_data, separators=(',', ':'))
         template = Template('window.audioAnalysis = {{ json_data }};')
         js = template.render(json_data=json_data_serialized)
 
@@ -42,5 +44,21 @@ class Analyzer(object):
 
 
 if __name__ == '__main__':
-    a = Analyzer()
+    import argparse
+
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        '--precision',
+        dest='precision',
+        help='Number of digits for representing a number',
+        type=int,
+        required=False,
+        default=3,
+        choices=range(1, 17)
+    )
+    args = arg_parser.parse_args()
+
+    a = Analyzer(
+        precision=args.precision
+    )
     a.run(os.path.join(settings.INPUT_DIRECTORY, 'features.json'))

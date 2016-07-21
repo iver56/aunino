@@ -84,3 +84,19 @@ class Standardizer(object):
                 -self.DEVIATION_LIMIT
             )  # clip extreme values
         return standardized_value
+
+    def round_to_precision(self, precision):
+        format_string = "{:." + str(precision) + "g}"
+        for sf in self.sound_files:
+            for feature in sf.analysis['series']:
+                if isinstance(sf.analysis['series'][feature][0], list):
+                    for i, series in enumerate(sf.analysis['series'][feature]):
+                        sf.analysis['series'][feature][i] = [
+                            float(format_string.format(value))
+                            for value in series
+                            ]
+                else:
+                    sf.analysis['series'][feature] = [
+                        float(format_string.format(value))
+                        for value in sf.analysis['series'][feature]
+                        ]
