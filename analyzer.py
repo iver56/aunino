@@ -36,7 +36,7 @@ class Analyzer(object):
         json_data = {snd.filename: snd.analysis['series'] for snd in sounds}
 
         json_data_serialized = json.dumps(json_data, separators=(',', ':'))
-        template = Template('window.audioAnalysis = {{ json_data }};')
+        template = Template('window.audioAnalysis={{ json_data }};')
         js = template.render(json_data=json_data_serialized)
 
         with open(os.path.join(settings.INPUT_DIRECTORY, 'audioAnalysis.js'), 'w') as outfile:

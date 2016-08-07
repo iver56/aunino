@@ -8,7 +8,7 @@ class Standardizer(object):
 
     def __init__(self, sound_files):
         """
-        :param sound_files: SoundFile instances with series to be analyzed and/or standardized
+        :param sound_files: Sound instances with series to be analyzed and/or standardized
         :return:
         """
         self.sound_files = sound_files
