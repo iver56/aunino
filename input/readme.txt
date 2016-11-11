@@ -1,1 +1,1 @@
-Place your settings.json wav files here
+Place your features.json and wav files here
