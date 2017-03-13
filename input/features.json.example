@@ -1,0 +1,9 @@
+{
+  "flute.wav": [
+    "spectral_energy",
+    "spectral_centroid"
+  ],
+  "hihat.wav": [
+    "spectral_energy"
+  ]
+}
