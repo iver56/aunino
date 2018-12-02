@@ -1,6 +1,6 @@
 # Setup
 
-First, make sure that all python dependencies are installed: `[sudo] pip install -r requirements.txt` (run without sudo on Windows)
+First, make sure that all python dependencies are installed: `conda env create`
 
 ## Install essentia extractors
 

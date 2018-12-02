@@ -1,0 +1,9 @@
+name: aunino
+channels:
+- defaults
+dependencies:
+- pip>=9.0.1,<=18.1
+- python=2.7.*
+- pip:
+  - Jinja2==2.8
+  - statistics==1.0.3.5
